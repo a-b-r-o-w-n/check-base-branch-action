@@ -49,7 +49,7 @@ async function run() {
 
         await oktokit.pulls.update({
           ...payload,
-          base: "master"
+          base: defaultBranch
         });
       } else {
         core.setFailed(`Base branch set to protected branch '${pr.data.base.ref}'`);
