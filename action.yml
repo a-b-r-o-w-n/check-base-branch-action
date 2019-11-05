@@ -16,3 +16,6 @@ inputs:
 runs:
   using: "node12"
   main: "lib/check-base-branch.js"
+branding:
+  icon: "lock"
+  color: "black"
