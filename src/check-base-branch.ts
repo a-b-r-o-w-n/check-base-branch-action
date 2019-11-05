@@ -45,12 +45,14 @@ async function run() {
 
     if (protectedBranches.includes(pr.data.base.ref)) {
       if (updateBranch === 'true') {
-        core.info(`updateBranch set to true. Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`);
+        core.debug(`Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`);
 
         await oktokit.pulls.update({
           ...payload,
           base: defaultBranch
         });
+
+        core.info(`Branch updated from '${pr.data.base.ref}' to '${defaultBranch}'.`)
       } else {
         core.setFailed(`Base branch set to protected branch '${pr.data.base.ref}'`);
         return;
