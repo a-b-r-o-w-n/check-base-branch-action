@@ -9,6 +9,12 @@ const getPRNumber = (): number | undefined => {
   }
 };
 
+const getProtectedBranches = (): string[] => {
+  const branches = core.getInput("protected-branches", { required: true });
+
+  return branches.split(',').map(b => b.trim());
+}
+
 async function run() {
   const prNumber = getPRNumber();
 
@@ -17,14 +23,14 @@ async function run() {
     return;
   }
 
-  const token = core.getInput("repo-token", { required: true });
-  const protectedBranches = core.getInput("protected-branches", { required: true });
-  const updateBranch = core.getInput("update-branch");
-  const defaultBranch = core.getInput("default-branch", { required: updateBranch !== 'true' });
-
-  const oktokit = new github.GitHub(token);
-
   try {
+    const token = core.getInput("repo-token", { required: true });
+    const protectedBranches = getProtectedBranches();
+    const updateBranch = core.getInput("update-branch");
+    const defaultBranch = core.getInput("default-branch", { required: updateBranch !== 'true' });
+
+    const oktokit = new github.GitHub(token);
+
     core.debug(`Checking base branch for PR #${prNumber}`);
 
     const payload = {

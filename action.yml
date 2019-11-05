@@ -3,8 +3,10 @@ description: "Ensure that the base branch is not protected. Either update the ba
 inputs:
   repo-token:
     description: "Token used to interact with the Github API."
+    required: true
   protected-branches:
-    description: "List of branches that are protected."
+    description: "Comma separated list of branches that are protected."
+    required: true
   update-branch:
     description: "If true, will update base branch of PR."
     default: true
