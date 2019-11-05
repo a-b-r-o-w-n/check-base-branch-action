@@ -1,4 +1,4 @@
-name: "Update Base Branch"
+name: "Check Base Branch"
 description: "Ensure that the base branch is not protected. Either update the base or fail the check if it is."
 inputs:
   repo-token:
