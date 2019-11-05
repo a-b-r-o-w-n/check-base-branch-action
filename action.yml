@@ -9,7 +9,7 @@ inputs:
     required: true
   update-branch:
     description: "If true, will update base branch of PR."
-    default: true
+    default: false
   default-branch:
     description: "Branch to set as base if PR is opened against a protected branch."
     default: "master"
