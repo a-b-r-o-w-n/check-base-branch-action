@@ -9,10 +9,10 @@
   "author": "andy.brown@microsoft.com",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^3.7.2"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@actions/core": "^1.2.0",
+    "@actions/core": "^1.2.5",
     "@actions/github": "^1.1.0"
   }
 }
