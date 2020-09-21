@@ -18,7 +18,7 @@ jobs:
       - uses: a-b-r-o-w-n/check-base-branch-action@v1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          protectedBranches: "master, production"
+          protected-branches: "master, production"
 ```
 
 #### Updting the base branch
@@ -35,8 +35,8 @@ jobs:
       - uses: a-b-r-o-w-n/check-base-branch-action@v1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          protectedBranches: "master, production"
-          defaultBranch: "dev"
+          protected-branches: "master, production"
+          default-branch: "dev"
           update-branch: true
 ```
 
