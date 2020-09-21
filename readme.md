@@ -5,6 +5,7 @@ check-base-branch validates that pull requests are opened against allowed branch
 ## Usage
 
 #### Failing the check
+
 In `.github/workflows/main.yml:
 
 ```yml
@@ -15,13 +16,14 @@ on: [pull_request]
 jobs:
   check-base-branch:
     steps:
-      - uses: a-b-r-o-w-n/check-base-branch-action@v1
+      - uses: a-b-r-o-w-n/check-base-branch-action@v1.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           protected-branches: "main, production"
 ```
 
-#### Updting the base branch
+#### Updating the base branch
+
 In `.github/workflows/main.yml:
 
 ```yml
@@ -32,7 +34,7 @@ on: [pull_request]
 jobs:
   check-base-branch:
     steps:
-      - uses: a-b-r-o-w-n/check-base-branch-action@v1
+      - uses: a-b-r-o-w-n/check-base-branch-action@v1.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           protected-branches: "main, production"
