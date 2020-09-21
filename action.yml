@@ -12,7 +12,7 @@ inputs:
     default: false
   default-branch:
     description: "Branch to set as base if PR is opened against a protected branch."
-    default: "master"
+    default: "main"
 runs:
   using: "node12"
   main: "lib/check-base-branch.js"
