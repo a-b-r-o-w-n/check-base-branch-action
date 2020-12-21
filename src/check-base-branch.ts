@@ -9,6 +9,12 @@ const getPRNumber = (): number | undefined => {
   }
 };
 
+const getExceptionBranches = (): string[] => {
+  const branches = core.getInput("exception-branches");
+
+  return branches.split(',').map(b => b.trim());
+}
+
 const getProtectedBranches = (): string[] => {
   const branches = core.getInput("protected-branches", { required: true });
 
@@ -26,6 +32,7 @@ async function run() {
   try {
     const token = core.getInput("repo-token", { required: true });
     const protectedBranches = getProtectedBranches();
+    const exceptionBranches = getExceptionBranches();
     const updateBranch = core.getInput("update-branch");
     const defaultBranch = core.getInput("default-branch", { required: updateBranch !== 'true' });
 
@@ -44,7 +51,9 @@ async function run() {
     });
 
     if (protectedBranches.includes(pr.data.base.ref)) {
-      if (updateBranch === 'true') {
+      if (exceptionBranches.includes(pr.data.head.ref)) {
+        core.debug(`'${pr.data.head.ref}' is allowed to PR against '${pr.data.base.ref}'. Skipping.`)
+      } else if (updateBranch === 'true') {
         core.debug(`Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`);
 
         await oktokit.pulls.update({
