@@ -9,16 +9,27 @@ const getPRNumber = (): number | undefined => {
   }
 };
 
-const getExceptionBranches = (): string[] => {
-  const branches = core.getInput("exception-branches");
+const getBranches = (key: string, isRequired: boolean): string[] => {
+  const branches = core.getInput(key, { required: isRequired });
 
   return branches.split(',').map(b => b.trim());
 }
 
 const getProtectedBranches = (): string[] => {
-  const branches = core.getInput("protected-branches", { required: true });
+  return getBranches("protected-branches", true);
+}
 
-  return branches.split(',').map(b => b.trim());
+const getExceptionBranches = (): string[] => {
+  return getBranches("exception-branches", false);
+}
+
+const getExceptionPrefixes = (): string[] => {
+  return getBranches("exception-prefixes", false);
+}
+
+const pullRequestIsExempt = (prBranch: string): boolean => {
+  return getExceptionBranches().some(exceptionBranch => exceptionBranch === prBranch)
+      || getExceptionPrefixes().some(prefix => prBranch.startsWith(prefix));
 }
 
 async function run() {
@@ -32,7 +43,6 @@ async function run() {
   try {
     const token = core.getInput("repo-token", { required: true });
     const protectedBranches = getProtectedBranches();
-    const exceptionBranches = getExceptionBranches();
     const updateBranch = core.getInput("update-branch");
     const defaultBranch = core.getInput("default-branch", { required: updateBranch !== 'true' });
 
@@ -51,7 +61,7 @@ async function run() {
     });
 
     if (protectedBranches.includes(pr.data.base.ref)) {
-      if (exceptionBranches.includes(pr.data.head.ref)) {
+      if (pullRequestIsExempt(pr.data.head.ref)) {
         core.debug(`'${pr.data.head.ref}' is allowed to PR against '${pr.data.base.ref}'. Skipping.`)
       } else if (updateBranch === 'true') {
         core.debug(`Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`);
