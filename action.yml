@@ -10,6 +10,9 @@ inputs:
   exception-branches:
     description: "Comma separated list of branches that are excepted."
     required: false
+  exception-prefixes:
+    description: "Comma separated list of branch prefixes that are excepted."
+    required: false
   update-branch:
     description: "If true, will update base branch of PR."
     default: false
