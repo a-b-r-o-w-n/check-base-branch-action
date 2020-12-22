@@ -28,6 +28,9 @@ const getExceptionPrefixes = (): string[] => {
 }
 
 const pullRequestIsExempt = (prBranch: string): boolean => {
+  core.info(`PR Branch: '${prBranch}'.`)
+
+
   return getExceptionBranches().some(exceptionBranch => exceptionBranch === prBranch)
       || getExceptionPrefixes().some(prefix => prBranch.startsWith(prefix));
 }
@@ -59,6 +62,8 @@ async function run() {
     const pr = await oktokit.pulls.get({
       ...payload
     });
+
+    core.info(`Base Branch: '${pr.data.base.ref}'.`)
 
     if (protectedBranches.includes(pr.data.base.ref)) {
       if (pullRequestIsExempt(pr.data.head.ref)) {
