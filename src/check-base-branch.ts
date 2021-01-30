@@ -9,10 +9,29 @@ const getPRNumber = (): number | undefined => {
   }
 };
 
-const getProtectedBranches = (): string[] => {
-  const branches = core.getInput("protected-branches", { required: true });
+const getBranches = (key: string, isRequired: boolean): string[] => {
+  const branches = core.getInput(key, { required: isRequired });
 
   return branches.split(',').map(b => b.trim());
+}
+
+const getProtectedBranches = (): string[] => {
+  return getBranches("protected-branches", true);
+}
+
+const getExceptionBranches = (): string[] => {
+  return getBranches("exception-branches", false);
+}
+
+const getExceptionPrefixes = (): string[] => {
+  return getBranches("exception-prefixes", false);
+}
+
+const pullRequestIsExempt = (prBranch: string): boolean => {
+  core.debug(`PR Branch: '${prBranch}'.`)
+
+  return getExceptionBranches().some(exceptionBranch => exceptionBranch === prBranch)
+      || getExceptionPrefixes().some(prefix => prBranch.startsWith(prefix));
 }
 
 async function run() {
@@ -43,8 +62,12 @@ async function run() {
       ...payload
     });
 
+    core.debug(`Base Branch: '${pr.data.base.ref}'.`)
+
     if (protectedBranches.includes(pr.data.base.ref)) {
-      if (updateBranch === 'true') {
+      if (pullRequestIsExempt(pr.data.head.ref)) {
+        core.debug(`'${pr.data.head.ref}' is allowed to PR against '${pr.data.base.ref}'. Skipping.`)
+      } else if (updateBranch === 'true') {
         core.debug(`Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`);
 
         await oktokit.pulls.update({
