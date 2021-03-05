@@ -34,7 +34,7 @@ async function run() {
     if (protectedBranches.includes(pr.base.ref)) {
       if (updateBranch === "true") {
         core.debug(
-          `Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`
+          `Updating base branch '${pr.base.ref}' to '${defaultBranch}'.`
         );
 
         const oktokit = new github.GitHub(token);
@@ -50,12 +50,10 @@ async function run() {
         });
 
         core.info(
-          `Branch updated from '${pr.data.base.ref}' to '${defaultBranch}'.`
+          `Branch updated from '${pr.base.ref}' to '${defaultBranch}'.`
         );
       } else {
-        core.setFailed(
-          `Base branch set to protected branch '${pr.data.base.ref}'`
-        );
+        core.setFailed(`Base branch set to protected branch '${pr.base.ref}'`);
         return;
       }
     } else {
