@@ -4,12 +4,13 @@
   "description": "Github action to check PR branch is not stable.",
   "main": "lib/check-stable-branch.js",
   "scripts": {
-    "build": "tsc"
+    "build": "node build.js"
   },
   "author": "andy.brown@microsoft.com",
   "license": "MIT",
   "devDependencies": {
     "esbuild": "^0.8.56",
+    "fs-extra": "^9.1.0",
     "typescript": "^4.0.2"
   },
   "dependencies": {
