@@ -23,10 +23,10 @@ async function run() {
     const protectedBranches = getProtectedBranches();
     const updateBranch = core.getInput("update-branch");
     const defaultBranch = core.getInput("default-branch", {
-      required: updateBranch !== "true",
+      required: updateBranch === "true",
     });
     const token = core.getInput("repo-token", {
-      required: updateBranch !== "true",
+      required: updateBranch === "true",
     });
 
     core.debug(`Checking base branch for PR #${pr.number}`);
