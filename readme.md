@@ -18,7 +18,6 @@ jobs:
     steps:
       - uses: a-b-r-o-w-n/check-base-branch-action@v1.1
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
           protected-branches: "main, production"
 ```
 

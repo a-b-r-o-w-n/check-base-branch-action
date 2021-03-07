@@ -1,64 +1,63 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-const getPRNumber = (): number | undefined => {
-  const pr = github.context.payload.pull_request;
-
-  if (pr) {
-    return pr.number;
-  }
+const getPR = () => {
+  return github.context.payload.pull_request;
 };
 
 const getProtectedBranches = (): string[] => {
   const branches = core.getInput("protected-branches", { required: true });
 
-  return branches.split(',').map(b => b.trim());
-}
+  return branches.split(",").map((b) => b.trim());
+};
 
 async function run() {
-  const prNumber = getPRNumber();
+  const pr = getPR();
 
-  if (!prNumber) {
-    core.debug("Could not get pull request number from context. Skipping.");
+  if (!pr) {
+    core.debug("Could not get pull request from context. Skipping.");
     return;
   }
 
   try {
-    const token = core.getInput("repo-token", { required: true });
     const protectedBranches = getProtectedBranches();
     const updateBranch = core.getInput("update-branch");
-    const defaultBranch = core.getInput("default-branch", { required: updateBranch !== 'true' });
-
-    const oktokit = new github.GitHub(token);
-
-    core.debug(`Checking base branch for PR #${prNumber}`);
-
-    const payload = {
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      pull_number: prNumber
-    };
-
-    const pr = await oktokit.pulls.get({
-      ...payload
+    const defaultBranch = core.getInput("default-branch", {
+      required: updateBranch === "true",
+    });
+    const token = core.getInput("repo-token", {
+      required: updateBranch === "true",
     });
 
-    if (protectedBranches.includes(pr.data.base.ref)) {
-      if (updateBranch === 'true') {
-        core.debug(`Updating base branch '${pr.data.base.ref}' to '${defaultBranch}'.`);
+    core.debug(`Checking base branch for PR #${pr.number}`);
+
+    if (protectedBranches.includes(pr.base.ref)) {
+      if (updateBranch === "true") {
+        core.debug(
+          `Updating base branch '${pr.base.ref}' to '${defaultBranch}'.`
+        );
+
+        const oktokit = new github.GitHub(token);
+        const payload = {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          pull_number: pr.number,
+        };
 
         await oktokit.pulls.update({
           ...payload,
-          base: defaultBranch
+          base: defaultBranch,
         });
 
-        core.info(`Branch updated from '${pr.data.base.ref}' to '${defaultBranch}'.`)
+        core.info(
+          `Branch updated from '${pr.base.ref}' to '${defaultBranch}'.`
+        );
       } else {
-        core.setFailed(`Base branch set to protected branch '${pr.data.base.ref}'`);
+        core.setFailed(`Base branch set to protected branch '${pr.base.ref}'`);
         return;
       }
     } else {
-      core.debug(`Base branch is ${pr.data.base.ref}. Skipping.`);
+      core.debug(`Base branch is ${pr.base.ref}. Skipping.`);
     }
   } catch (err) {
     core.error(err);

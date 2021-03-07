@@ -1,21 +1,23 @@
 name: "Check Base Branch"
 description: "Ensure that the base branch is not protected. Either update the base or fail the check if it is."
 inputs:
-  repo-token:
-    description: "Token used to interact with the Github API."
-    required: true
   protected-branches:
     description: "Comma separated list of branches that are protected."
     required: true
   update-branch:
     description: "If true, will update base branch of PR."
-    default: false
+    default: "false"
+    required: false
   default-branch:
-    description: "Branch to set as base if PR is opened against a protected branch."
+    description: "Branch to set as base if PR is opened against a protected branch. Required when update-branch is true."
     default: "main"
+    required: false
+  repo-token:
+    description: "Token used to interact with the Github API. Required when update-branch is true."
+    required: false
 runs:
   using: "node12"
   main: "lib/check-base-branch.js"
 branding:
   icon: "lock"
-  color: "black"
+  color: gray-dark
